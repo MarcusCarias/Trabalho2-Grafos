@@ -1,0 +1,11 @@
+*.pdf
+*.exe
+*.py
+*.xlsx
+*.pptx
+*.csv
+
+falas_apresentacao.md
+
+PCSPG-CRR/
+PCSPG-JMP/
