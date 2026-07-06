@@ -19,12 +19,16 @@ Para limpar os arquivos compilados:
 COMO EXECUTAR
 ================================================================================
 
-  ./pcstp
+  ./pcstp                          # modo lote: todas as instancias, seed do relogio
+  ./pcstp -s 12345                 # modo lote com seed fixa
+  ./pcstp -i PCSPG-CRR/01.stp      # instancia unica, seed do relogio
+  ./pcstp -i PCSPG-CRR/01.stp -s 12345   # instancia unica com seed fixa
+  ./pcstp -h                       # exibe ajuda
 
 O programa deve ser executado a partir da raiz do repositorio (onde estao as
 pastas de instancias PCSPG-CRR/ e PCSPG-JMP/). Uma unica execucao roda os tres
 algoritmos em sequencia sobre a instancia configurada -- ou sobre TODAS as
-instancias das duas pastas, se o caminho da instancia estiver vazio.
+instancias das duas pastas, se nenhuma for informada com -i.
 
 ================================================================================
 ALGORITMOS EXECUTADOS (em sequencia, para cada instancia)
@@ -47,8 +51,14 @@ ALGORITMOS EXECUTADOS (em sequencia, para cada instancia)
 CONFIGURACAO DE PARAMETROS
 ================================================================================
 
-Os parametros sao definidos no bloco "configuracao" no inicio da funcao main()
-no arquivo main.cpp. Para altera-los, edite as variaveis abaixo e recompile:
+Instancia e seed podem ser informadas pela linha de comando:
+
+  -i <arquivo>    caminho do .stp (vazio = modo lote)
+  -s <numero>     seed de randomizacao (vazio = horario atual)
+  -h              exibe ajuda
+
+Os demais parametros dos algoritmos sao definidos no bloco "configuracao"
+no inicio da funcao main() em main.cpp. Para altera-los, edite e recompile:
 
   Variavel               | Descricao
   -----------------------|--------------------------------------------------
@@ -66,11 +76,11 @@ REPRODUTIBILIDADE
 
 A seed principal e gerada (e impressa) uma unica vez por execucao. Cada
 instancia do lote reinicia o gerador com seed = seed_principal + posicao.
-Para reproduzir o resultado de uma instancia isolada:
-  - Copie a seed da linha desejada no arquivo resultados.csv
-  - Cole em seedParametro no main.cpp
-  - Defina a instancia desejada em instancia
-  - Recompile e execute
+
+Para reproduzir o resultado de uma instancia isolada, copie a seed da linha
+desejada no arquivo resultados.csv e execute:
+
+  ./pcstp -i <instancia.stp> -s <seed>
 
 ================================================================================
 SAIDAS
