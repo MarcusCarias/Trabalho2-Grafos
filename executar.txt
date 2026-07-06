@@ -1,0 +1,89 @@
+Trabalho 2 - DCC059 Teoria dos Grafos
+Tema A - Prize-Collecting Steiner Tree Problem (PCSTP)
+
+================================================================================
+COMO COMPILAR (Linux)
+================================================================================
+
+  make
+
+Ou, sem Makefile:
+
+  g++ -std=c++17 -O2 main.cpp grafo.cpp guloso.cpp mst.cpp poda.cpp -o pcstp
+
+Para limpar os arquivos compilados:
+
+  make clean
+
+================================================================================
+COMO EXECUTAR
+================================================================================
+
+  ./pcstp
+
+O programa deve ser executado a partir da raiz do repositorio (onde estao as
+pastas de instancias PCSPG-CRR/ e PCSPG-JMP/). Uma unica execucao roda os tres
+algoritmos em sequencia sobre a instancia configurada -- ou sobre TODAS as
+instancias das duas pastas, se o caminho da instancia estiver vazio.
+
+================================================================================
+ALGORITMOS EXECUTADOS (em sequencia, para cada instancia)
+================================================================================
+
+1. Guloso
+   - Construtivo deterministico (alfa = 0).
+   - Parametro: nenhum (alfa fixo em 0).
+
+2. Guloso Randomizado
+   - Construtivo GRASP com alfa fixo.
+   - Parametros: alfa (ex.: 0.1) e numero de iteracoes (ex.: 30).
+
+3. Guloso Randomizado Reativo
+   - Construtivo GRASP com selecao adaptativa de alfa.
+   - Parametros: lista de alfas (ex.: 0.1, 0.2, 0.3),
+     numero de iteracoes (ex.: 300) e tamanho do bloco (ex.: 30).
+
+================================================================================
+CONFIGURACAO DE PARAMETROS
+================================================================================
+
+Os parametros sao definidos no bloco "configuracao" no inicio da funcao main()
+no arquivo main.cpp. Para altera-los, edite as variaveis abaixo e recompile:
+
+  Variavel               | Descricao
+  -----------------------|--------------------------------------------------
+  instancia              | Caminho do arquivo .stp; "" = todas as instancias
+  alfaRandomizado        | Alfa do guloso randomizado
+  iteracoesRandomizado   | Iteracoes do guloso randomizado
+  alfasReativo           | Lista de alfas do reativo
+  iteracoesReativo       | Iteracoes do reativo
+  tamanhoBloco           | Tamanho do bloco do reativo
+  seedParametro          | Seed; "" = gerada pelo horario atual
+
+================================================================================
+REPRODUTIBILIDADE
+================================================================================
+
+A seed principal e gerada (e impressa) uma unica vez por execucao. Cada
+instancia do lote reinicia o gerador com seed = seed_principal + posicao.
+Para reproduzir o resultado de uma instancia isolada:
+  - Copie a seed da linha desejada no arquivo resultados.csv
+  - Cole em seedParametro no main.cpp
+  - Defina a instancia desejada em instancia
+  - Recompile e execute
+
+================================================================================
+SAIDAS
+================================================================================
+
+Tela:
+  - Semente utilizada
+  - Para cada instancia: melhor custo, media dos custos, alfa da melhor
+    solucao (reativo) e tempo em segundos de cada algoritmo
+  - Arvore da melhor solucao (formato compativel com
+    https://csacademy.com/app/graph_editor/)
+
+resultados.csv:
+  - Uma linha por algoritmo com: data/hora, instancia, algoritmo, parametros,
+    semente, tempo e custos
+  - O arquivo acumula resultados entre execucoes (nao e sobrescrito)
