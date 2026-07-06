@@ -173,10 +173,11 @@ void executaInstancia(const std::string &instancia, std::mt19937 &rng, unsigned 
     imprimeSolucao(melhoresArestas, melhoresVertices);
 }
 
-int main()
+int main(int argc, char *argv[])
 {
-    // ------------------- configuracao -------------------
-    std::string instancia = "";  // vazio = executa todas as instancias das duas pastas
+    // ------------------- configuracao (valores padrao) -------------------
+    std::string instancia = "";
+    std::string seedParametro = "";
 
     double alfaRandomizado = 0.1;
     int iteracoesRandomizado = 30;
@@ -185,9 +186,27 @@ int main()
     int iteracoesReativo = 300;
     int tamanhoBloco = 30;
 
-    std::string seedParametro = "";           // vazio = usa o horario atual
     std::string arquivoCsv = "resultados.csv";
-    // -----------------------------------------------------
+    // ---------------------------------------------------------------------
+
+    // argumentos da linha de comando (sobrescrevem os padroes)
+    for (int a = 1; a < argc; a++) {
+        std::string arg = argv[a];
+        if (arg == "-i" && a + 1 < argc) {
+            instancia = argv[++a];
+        } else if (arg == "-s" && a + 1 < argc) {
+            seedParametro = argv[++a];
+        } else if (arg == "-h") {
+            std::cout << "Uso: ./pcstp [-i instancia.stp] [-s seed]" << std::endl;
+            std::cout << "  -i   caminho do arquivo .stp (vazio = todas as instancias)" << std::endl;
+            std::cout << "  -s   seed de randomizacao       (vazio = horario atual)" << std::endl;
+            std::cout << "  -h   esta ajuda" << std::endl;
+            std::cout << std::endl;
+            std::cout << "Demais parametros (alfa, iteracoes, etc.) devem ser alterados" << std::endl;
+            std::cout << "no bloco \"configuracao\" no inicio da funcao main() em main.cpp." << std::endl;
+            return 0;
+        }
+    }
 
     unsigned seed;
     if (seedParametro.empty()) {
