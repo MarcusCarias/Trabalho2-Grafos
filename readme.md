@@ -11,19 +11,35 @@ no formato `.stp` padrão da literatura.
 ## Como compilar (Linux)
 
 ```
+make
+```
+
+Ou, sem Makefile:
+
+```
 g++ -std=c++17 -O2 main.cpp grafo.cpp guloso.cpp mst.cpp poda.cpp -o pcstp
+```
+
+Para limpar os arquivos compilados:
+
+```
+make clean
 ```
 
 ## Como executar
 
 ```
-./pcstp
+./pcstp                          # modo lote: todas as instancias, seed do relogio
+./pcstp -s 12345                 # modo lote com seed fixa
+./pcstp -i PCSPG-CRR/01.stp      # instancia unica, seed do relogio
+./pcstp -i PCSPG-CRR/01.stp -s 12345   # instancia unica com seed fixa
+./pcstp -h                       # exibe ajuda
 ```
 
 O programa deve ser executado a partir da raiz do repositório (onde estão as pastas
 de instâncias). Uma única execução roda os três algoritmos em sequência sobre a
 instância configurada — ou sobre **todas** as instâncias de `PCSPG-CRR/` e
-`PCSPG-JMP/`, se o caminho da instância estiver vazio:
+`PCSPG-JMP/`, se nenhuma for informada com `-i`:
 
 1. **guloso** — construtivo com alfa = 0
 2. **guloso randomizado** — parâmetros: alfa e número de iterações
@@ -31,26 +47,35 @@ instância configurada — ou sobre **todas** as instâncias de `PCSPG-CRR/` e
 
 ## Como configurar a instância e os parâmetros
 
-A instância e os parâmetros dos algoritmos ficam no bloco "configuração" no início da
+Instância e seed podem ser informadas pela linha de comando:
+
+| Opção | Descrição |
+|---|---|
+| `-i <arquivo>` | caminho do `.stp` (vazio = modo lote) |
+| `-s <numero>`  | seed de randomização (vazio = horário atual) |
+| `-h`           | exibe ajuda |
+
+Os demais parâmetros dos algoritmos ficam no bloco "configuração" no início da
 função `main` (`main.cpp`), e para alterar basta editar e recompilar:
 
 | Variável | Descrição |
 |---|---|
-| `instancia` | caminho do arquivo `.stp`; vazio (`""`) executa todas as instâncias das pastas `PCSPG-CRR/` e `PCSPG-JMP/` |
 | `alfaRandomizado` | alfa do guloso randomizado |
 | `iteracoesRandomizado` | iterações do guloso randomizado|
 | `alfasReativo` | lista de alfas do reativo |
 | `iteracoesReativo` | iterações do reativo |
 | `tamanhoBloco` | tamanho do bloco do reativo |
-| `seedParametro` | seed de randomização; deixando vazio (`""`) a seed é gerada pelo horário atual |
 
 ### Reprodutibilidade
 
 A seed principal é gerada (e impressa) uma única vez por execução. Cada instância do
 lote reinicia o gerador com `seed principal + posição da instância`, e é essa seed da
 instância que aparece na tela e no csv. Para reproduzir o resultado de uma instância
-isolada, basta copiar a seed da linha dela no csv para `seedParametro` e colocar o
-caminho dela em `instancia`.
+isolada, copie a seed da linha desejada no `resultados.csv` e execute:
+
+```
+./pcstp -i <instancia.stp> -s <seed>
+```
 
 ## Saídas
 
