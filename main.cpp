@@ -239,11 +239,10 @@ int main(int argc, char *argv[])
         instancias.push_back(instancia);
     }
 
+    unsigned seedInstancia = seed;
+    rng.seed(seedInstancia);
     
     for (size_t i = 0; i < instancias.size(); i++) {
-        unsigned seedInstancia = seed + (unsigned) i;
-        rng.seed(seedInstancia);
-
         executaInstancia(instancias[i], rng, seedInstancia, alfaRandomizado, iteracoesRandomizado,
                          alfasReativo, iteracoesReativo, tamanhoBloco, arquivoCsv);
     }
