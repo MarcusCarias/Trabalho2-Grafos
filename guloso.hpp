@@ -17,14 +17,18 @@ class Guloso
     std::vector<int> verticesSolucao;
     double custo;
     std::string posProcessamento;
+    double custoAntesReligacao;
+    double custoPosReligacao;
 
-    
     std::vector<std::tuple<int, int, double>> melhorSolucao;
     std::vector<int> melhorVertices;
     double melhorCusto;
     double mediaCustos;
     double melhorAlfa;
     std::string melhorPosProcessamento;
+    double mediaAntesReligacao;
+    double mediaPosReligacao;
+    std::vector<double> mediasPorAlfa;
 
     void construir(double alfa);
 
@@ -41,6 +45,9 @@ public:
     double getMediaCustos();
     double getMelhorAlfa();
     std::string getMelhorPosProcessamento();
+    double getMediaAntesReligacao();
+    double getMediaPosReligacao();
+    std::vector<double> getMediasPorAlfa();
 };
 
 #endif

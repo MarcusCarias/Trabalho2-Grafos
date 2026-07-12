@@ -11,6 +11,10 @@ Guloso::Guloso(Grafo *g, std::mt19937 &gerador) : rng(gerador) {
     custo = 0.0;
     melhorCusto = 0.0;
     mediaCustos = 0.0;
+    custoAntesReligacao = 0.0;
+    custoPosReligacao = 0.0;
+    mediaAntesReligacao = 0.0;
+    mediaPosReligacao = 0.0;
 }
 
 void Guloso::construir(double alfa){
@@ -110,10 +114,13 @@ void Guloso::construir(double alfa){
     std::vector<bool> mantido = poda.getVerticesMantidos();
     posProcessamento = "poda";
 
+    custoAntesReligacao = custo;
 
     MST religada(grafo, mantido);
     Poda podaReligada(grafo, religada.getArestasMST());
     podaReligada.podarForte();
+
+    custoPosReligacao = podaReligada.getCustoFinal();
 
     if (podaReligada.getCustoFinal() < custo) {
         solucao = podaReligada.getArestasPodadas();
@@ -140,6 +147,9 @@ void Guloso::executarGuloso(){
     mediaCustos = custo;
     melhorAlfa = 0.0;
     melhorPosProcessamento = posProcessamento;
+    mediaAntesReligacao = custoAntesReligacao;
+    mediaPosReligacao = custoPosReligacao;
+    mediasPorAlfa.clear();
 }
 
 void Guloso::executarRandomizado(double alfa, int numIteracoes){
@@ -148,11 +158,16 @@ void Guloso::executarRandomizado(double alfa, int numIteracoes){
     melhorCusto = std::numeric_limits<double>::infinity();
     mediaCustos = 0.0;
     melhorAlfa = alfa;
+    mediaAntesReligacao = 0.0;
+    mediaPosReligacao = 0.0;
+    mediasPorAlfa.clear();
 
     for (int i = 0; i < numIteracoes; i++) {
         construir(alfa);
 
         mediaCustos += custo;
+        mediaAntesReligacao += custoAntesReligacao;
+        mediaPosReligacao += custoPosReligacao;
 
         if (custo < melhorCusto) {
             melhorCusto = custo;
@@ -163,6 +178,8 @@ void Guloso::executarRandomizado(double alfa, int numIteracoes){
     }
 
     mediaCustos /= numIteracoes;
+    mediaAntesReligacao /= numIteracoes;
+    mediaPosReligacao /= numIteracoes;
 }
 
 void Guloso::executarReativo(std::vector<double> alfas, int numIteracoes, int tamanhoBloco){
@@ -173,8 +190,10 @@ void Guloso::executarReativo(std::vector<double> alfas, int numIteracoes, int ta
     melhorCusto = std::numeric_limits<double>::infinity();
     mediaCustos = 0.0;
     melhorAlfa = alfas[0];
+    mediaAntesReligacao = 0.0;
+    mediaPosReligacao = 0.0;
 
-    
+
     std::vector<double> probabilidade(numAlfas, 1.0 / numAlfas);
     std::vector<double> somaCusto(numAlfas, 0.0);
     std::vector<int> quantidade(numAlfas, 0);
@@ -189,6 +208,8 @@ void Guloso::executarReativo(std::vector<double> alfas, int numIteracoes, int ta
         somaCusto[indice] += custo;
         quantidade[indice]++;
         mediaCustos += custo;
+        mediaAntesReligacao += custoAntesReligacao;
+        mediaPosReligacao += custoPosReligacao;
 
         if (custo < melhorCusto) {
             melhorCusto = custo;
@@ -218,6 +239,16 @@ void Guloso::executarReativo(std::vector<double> alfas, int numIteracoes, int ta
     }
 
     mediaCustos /= numIteracoes;
+    mediaAntesReligacao /= numIteracoes;
+    mediaPosReligacao /= numIteracoes;
+
+    // media de custo obtida por cada alfa, na mesma ordem do vetor de alfas
+    mediasPorAlfa.assign(numAlfas, 0.0);
+    for (int a = 0; a < numAlfas; a++) {
+        if (quantidade[a] > 0) {
+            mediasPorAlfa[a] = somaCusto[a] / quantidade[a];
+        }
+    }
 }
 
 std::vector<std::tuple<int, int, double>> Guloso::getMelhorSolucao(){
@@ -242,4 +273,16 @@ double Guloso::getMelhorAlfa(){
 
 std::string Guloso::getMelhorPosProcessamento(){
     return melhorPosProcessamento;
+}
+
+double Guloso::getMediaAntesReligacao(){
+    return mediaAntesReligacao;
+}
+
+double Guloso::getMediaPosReligacao(){
+    return mediaPosReligacao;
+}
+
+std::vector<double> Guloso::getMediasPorAlfa(){
+    return mediasPorAlfa;
 }

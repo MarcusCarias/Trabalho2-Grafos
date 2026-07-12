@@ -3,7 +3,7 @@
 *.py
 *.xlsx
 *.pptx
-*.csv
+
 *.o
 
 falas_apresentacao.md
