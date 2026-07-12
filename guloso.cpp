@@ -108,6 +108,7 @@ void Guloso::construir(double alfa){
     solucao = poda.getArestasPodadas();
     custo = poda.getCustoFinal();
     std::vector<bool> mantido = poda.getVerticesMantidos();
+    posProcessamento = "poda";
 
 
     MST religada(grafo, mantido);
@@ -118,6 +119,7 @@ void Guloso::construir(double alfa){
         solucao = podaReligada.getArestasPodadas();
         custo = podaReligada.getCustoFinal();
         mantido = podaReligada.getVerticesMantidos();
+        posProcessamento = "poda+mst";
     }
 
     verticesSolucao.clear();
@@ -137,6 +139,7 @@ void Guloso::executarGuloso(){
     melhorCusto = custo;
     mediaCustos = custo;
     melhorAlfa = 0.0;
+    melhorPosProcessamento = posProcessamento;
 }
 
 void Guloso::executarRandomizado(double alfa, int numIteracoes){
@@ -155,6 +158,7 @@ void Guloso::executarRandomizado(double alfa, int numIteracoes){
             melhorCusto = custo;
             melhorSolucao = solucao;
             melhorVertices = verticesSolucao;
+            melhorPosProcessamento = posProcessamento;
         }
     }
 
@@ -191,6 +195,7 @@ void Guloso::executarReativo(std::vector<double> alfas, int numIteracoes, int ta
             melhorSolucao = solucao;
             melhorVertices = verticesSolucao;
             melhorAlfa = alfas[indice];
+            melhorPosProcessamento = posProcessamento;
         }
 
         
@@ -233,4 +238,8 @@ double Guloso::getMediaCustos(){
 
 double Guloso::getMelhorAlfa(){
     return melhorAlfa;
+}
+
+std::string Guloso::getMelhorPosProcessamento(){
+    return melhorPosProcessamento;
 }

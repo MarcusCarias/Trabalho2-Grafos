@@ -35,7 +35,7 @@ std::string formataTempo(double segundos)
 void gravaCsv(const std::string &caminho, const std::string &instancia, const std::string &algoritmo,
               const std::string &alfa, const std::string &numIteracoes, const std::string &tamanhoBloco,
               unsigned seed, double tempoSegundos, double melhorCusto, double mediaCustos,
-              const std::string &melhorAlfa)
+              const std::string &melhorAlfa, const std::string &posProcessamento = "")
 {
     bool arquivoNovo;
     {
@@ -46,7 +46,7 @@ void gravaCsv(const std::string &caminho, const std::string &instancia, const st
     std::ofstream csv(caminho, std::ios::app);
 
     if (arquivoNovo) {
-        csv << "data_hora,instancia,algoritmo,alfa,num_iteracoes,tamanho_bloco,seed,tempo_seg,melhor_custo,media_custos,melhor_alfa\n";
+        csv << "data_hora,instancia,algoritmo,alfa,num_iteracoes,tamanho_bloco,seed,tempo_seg,melhor_custo,media_custos,melhor_alfa,pos_processamento\n";
     }
 
     std::time_t agora = std::time(nullptr);
@@ -56,7 +56,8 @@ void gravaCsv(const std::string &caminho, const std::string &instancia, const st
     csv << dataHora << "," << instancia << "," << algoritmo << ","
         << alfa << "," << numIteracoes << "," << tamanhoBloco << "," << seed << ","
         << formataTempo(tempoSegundos) << ","
-        << numeroCurto(melhorCusto) << "," << numeroCurto(mediaCustos) << "," << melhorAlfa << "\n";
+        << numeroCurto(melhorCusto) << "," << numeroCurto(mediaCustos) << "," << melhorAlfa << ","
+        << posProcessamento << "\n";
 }
 
 
@@ -103,7 +104,8 @@ void executaInstancia(const std::string &instancia, std::mt19937 &rng, unsigned 
               << formataTempo(tempo) << "s" << std::endl;
 
     gravaCsv(arquivoCsv, instancia, "guloso", "", "", "", seed, tempo,
-             guloso.getMelhorCusto(), guloso.getMediaCustos(), "");
+             guloso.getMelhorCusto(), guloso.getMediaCustos(), "",
+             guloso.getMelhorPosProcessamento());
 
     if (guloso.getMelhorCusto() < melhorCustoGeral) {
         melhorCustoGeral = guloso.getMelhorCusto();
@@ -125,7 +127,8 @@ void executaInstancia(const std::string &instancia, std::mt19937 &rng, unsigned 
 
     gravaCsv(arquivoCsv, instancia, "randomizado", numeroCurto(alfaRandomizado),
              std::to_string(iteracoesRandomizado), "", seed, tempo,
-             guloso.getMelhorCusto(), guloso.getMediaCustos(), "");
+             guloso.getMelhorCusto(), guloso.getMediaCustos(), "",
+             guloso.getMelhorPosProcessamento());
 
     if (guloso.getMelhorCusto() < melhorCustoGeral) {
         melhorCustoGeral = guloso.getMelhorCusto();
@@ -156,7 +159,8 @@ void executaInstancia(const std::string &instancia, std::mt19937 &rng, unsigned 
 
     gravaCsv(arquivoCsv, instancia, "reativo", listaAlfas,
              std::to_string(iteracoesReativo), std::to_string(tamanhoBloco), seed, tempo,
-             guloso.getMelhorCusto(), guloso.getMediaCustos(), numeroCurto(guloso.getMelhorAlfa()));
+             guloso.getMelhorCusto(), guloso.getMediaCustos(), numeroCurto(guloso.getMelhorAlfa()),
+             guloso.getMelhorPosProcessamento());
 
     if (guloso.getMelhorCusto() < melhorCustoGeral) {
         melhorCustoGeral = guloso.getMelhorCusto();

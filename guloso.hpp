@@ -16,6 +16,7 @@ class Guloso
     std::vector<std::tuple<int, int, double>> solucao;
     std::vector<int> verticesSolucao;
     double custo;
+    std::string posProcessamento;
 
     
     std::vector<std::tuple<int, int, double>> melhorSolucao;
@@ -23,6 +24,7 @@ class Guloso
     double melhorCusto;
     double mediaCustos;
     double melhorAlfa;
+    std::string melhorPosProcessamento;
 
     void construir(double alfa);
 
@@ -38,6 +40,7 @@ public:
     double getMelhorCusto();
     double getMediaCustos();
     double getMelhorAlfa();
+    std::string getMelhorPosProcessamento();
 };
 
 #endif
